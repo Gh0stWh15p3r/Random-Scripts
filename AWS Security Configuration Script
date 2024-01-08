@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# Set AWS region and profile
+AWS_REGION="your-region"
+AWS_PROFILE="your-profile"
+
+# Update security groups
+echo "Updating Security Groups..."
+aws ec2 authorize-security-group-ingress \
+    --region $AWS_REGION \
+    --profile $AWS_PROFILE \
+    --group-id your-security-group-id \
+    --protocol tcp \
+    --port 22 \
+    --cidr your-ip-range
+
+# Create and configure a new IAM user with appropriate permissions
+echo "Creating IAM User..."
+aws iam create-user --user-name your-iam-username --region $AWS_REGION --profile $AWS_PROFILE
+
+# Attach IAM policies to the user
+echo "Attaching IAM Policies to the User..."
+aws iam attach-user-policy \
+    --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess \
+    --user-name your-iam-username \
+    --region $AWS_REGION \
+    --profile $AWS_PROFILE
+
+# Create and configure Network ACLs
+echo "Configuring Network ACLs..."
+aws ec2 create-network-acl --vpc-id your-vpc-id --region $AWS_REGION --profile $AWS_PROFILE
+aws ec2 create-network-acl-entry \
+    --network-acl-id your-nacl-id \
+    --ingress \
+    --rule-number 100 \
+    --protocol -1 \
+    --cidr-block 0.0.0.0/0 \
+    --rule-action allow \
+    --region $AWS_REGION \
+    --profile $AWS_PROFILE
+
+# Enable AWS Config for monitoring and compliance
+echo "Enabling AWS Config..."
+aws configservice put-config-rule \
+    --config-rule \
+    '{"configRuleName":"encrypted-volumes","source":{"owner":"AWS","sourceIdentifier":"ENCRYPTED_VOLUMES"},"inputParameters":""}' \
+    --region $AWS_REGION \
+    --profile $AWS_PROFILE
+
+echo "Security configurations applied successfully!"
