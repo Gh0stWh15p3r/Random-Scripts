@@ -1,0 +1,44 @@
+import time
+import random
+
+# Simulated user credentials (dictionary-based authentication)
+valid_credentials = {"admin": "password123", "user1": "pass123", "user2": "qwerty"}
+
+# Dictionary to store login attempts and timestamps
+login_attempts = {}
+
+# Function to simulate login attempts
+def simulate_login(username, password, ip_address):
+    # Simulate a delay to mimic real login attempts
+    time.sleep(random.uniform(0.1, 1))
+
+    # Check if the login attempt is valid
+    if valid_credentials.get(username) == password:
+        print(f"Successful login by {username} from IP address {ip_address}")
+    else:
+        print(f"Failed login attempt by {username} from IP address {ip_address}")
+
+        # Record the login attempt and timestamp
+        if username in login_attempts:
+            login_attempts[username].append(time.time())
+        else:
+            login_attempts[username] = [time.time()]
+
+        # Check for brute force attempts
+        if len(login_attempts.get(username, [])) > 5:
+            print(f"Potential brute force attempt detected for {username} from {ip_address}")
+            # Take necessary actions (e.g., block IP, alert, etc.)
+            # In a real-world scenario, you might use a more advanced alerting mechanism.
+
+# Simulate login attempts
+for _ in range(20):
+    # Simulate different IP addresses
+    fake_ip = ".".join(map(str, (random.randint(0, 255) for _ in range(4))))
+
+    # Simulate different usernames and passwords
+    fake_username = random.choice(list(valid_credentials.keys()))
+    fake_password = f"wrongpassword{random.randint(100, 999)}"
+
+    # Simulate a brute force attack by using the same credentials multiple times
+    for _ in range(random.randint(1, 5)):
+        simulate_login(fake_username, fake_password, fake_ip)
