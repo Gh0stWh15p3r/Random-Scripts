@@ -1,0 +1,51 @@
+import subprocess
+import os
+import platform
+
+def check_os():
+    return platform.system()
+
+def configure_firewall():
+    os_type = check_os()
+    if os_type == "Windows":
+        subprocess.run("netsh advfirewall set allprofiles state on", shell=True)
+        print("Firewall enabled on Windows.")
+    elif os_type == "Linux":
+        subprocess.run("ufw enable", shell=True)
+        print("Firewall enabled on Linux.")
+    else:
+        print("Unsupported operating system.")
+
+def install_intrusion_detection_system():
+    os_type = check_os()
+    if os_type == "Windows":
+        print("Installing Windows Defender for Intrusion Detection.")
+        # Actual implementation would involve installing a dedicated IDS on Windows
+    elif os_type == "Linux":
+        print("Installing Snort for Intrusion Detection.")
+        # Actual implementation would involve installing and configuring Snort on Linux
+    else:
+        print("Unsupported operating system.")
+
+def monitor_logs():
+    os_type = check_os()
+    if os_type == "Windows":
+        subprocess.run("eventvwr.msc", shell=True)
+        print("Monitoring Windows Event Viewer for logs.")
+    elif os_type == "Linux":
+        subprocess.run("tail -f /var/log/syslog", shell=True)
+        print("Monitoring Linux syslog for logs.")
+    else:
+        print("Unsupported operating system.")
+
+if __name__ == "__main__":
+    print("Network Security Script")
+
+    # Configure firewall
+    configure_firewall()
+
+    # Install Intrusion Detection System
+    install_intrusion_detection_system()
+
+    # Monitor logs
+    monitor_logs()
